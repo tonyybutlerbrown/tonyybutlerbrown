@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tonyy — Software Engineer Portfolio</title>
+  <meta name="description" content="Colorful, interactive portfolio for a software engineer." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b1020;
+      --text: #f6f7fb;
+      --muted: #b8c2cc;
+      --card: rgba(255,255,255,.06);
+      --border: rgba(255,255,255,.16);
+      --primary: #7c3aed; /* Purple */
+      --accent: #22d3ee;  /* Cyan */
+      --glow: 0 0 40px rgba(124, 58, 237, .45), 0 0 80px rgba(34, 211, 238, .25);
+    }
+    [data-theme="sunrise"]{
+      --bg: #0f0a1f;
+      --primary: #f97316; /* Orange */
+      --accent: #fb7185;  /* Rose */
+    }
+    [data-theme="forest"]{
+      --bg: #0a1210;
+      --primary: #10b981; /* Emerald */
+      --accent: #60a5fa;  /* Sky */
+    }
+    [data-theme="candy"]{
+      --bg: #130c1c;
+      --primary: #e879f9; /* Fuchsia */
+      --accent: #f472b6;  /* Pink */
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
+      color:var(--text); background: radial-gradient(1000px 600px at 80% -20%, rgba(124,58,237,.25), transparent 55%),
+                          radial-gradient(800px 500px at -20% 20%, rgba(34,211,238,.2), transparent 45%),
+                          var(--bg);
+      overflow-x:hidden;
+    }
+    a{color:inherit; text-decoration:none}
+    .container{width:min(1200px, 92vw); margin-inline:auto}
+
+    /* Header */
+    header{
+      position:sticky; top:0; z-index:50; backdrop-filter:saturate(110%) blur(10px);
+      background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,0));
+      border-bottom:1px solid var(--border);
+    }
+    .nav{display:flex; align-items:center; justify-content:space-between; padding:14px 0;}
+    .logo{display:flex; gap:10px; align-items:center; font-weight:800; letter-spacing:.5px}
+    .logo-badge{width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg, var(--primary), var(--accent)); box-shadow: var(--glow)}
+    .nav a{opacity:.9}
+    .nav a:hover{opacity:1}
+    .nav-links{display:flex; gap:22px; align-items:center}
+
+    .btn{display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border:1px solid var(--border); border-radius:12px; background:var(--card); transition:all .25s ease}
+    .btn:hover{transform:translateY(-1px); box-shadow:var(--glow)}
+
+    /* Hero */
+    .hero{display:grid; grid-template-columns:1.1fr .9fr; gap:36px; padding:64px 0 24px}
+    .title{font-size: clamp(32px, 6vw, 60px); line-height:1.04; font-weight:900; letter-spacing:-.02em}
+    .title .grad{background:linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip:text; background-clip:text; color:transparent; text-shadow:0 10px 40px rgba(0,0,0,.3)}
+    .subtitle{margin-top:12px; color:var(--muted); font-size:clamp(15px,2.2vw,18px)}
+    .hero-cta{margin-top:22px; display:flex; gap:12px; flex-wrap:wrap}
+
+    .hero-card{position:relative; border:1px solid var(--border); background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.05)); border-radius:24px; padding:18px; overflow:hidden}
+    .hero-grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:14px}
+
+    .chip{font:600 12px/1 Inter; letter-spacing:.4px; text-transform:uppercase; padding:8px 10px; border-radius:999px; background:linear-gradient(135deg, rgba(124,58,237,.15), rgba(34,211,238,.15)); border:1px solid var(--border); display:inline-flex; gap:8px; align-items:center}
+
+    .badge-dot{width:8px; height:8px; border-radius:999px; background:var(--accent); box-shadow: 0 0 14px var(--accent)}
+
+    /* Section */
+    section{padding:56px 0}
+    .section-title{font-size:28px; font-weight:800; margin:0 0 18px; letter-spacing:-.01em}
+    .section-sub{margin:-6px 0 22px; color:var(--muted)}
+
+    /* Cards */
+    .grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:18px}
+    .card{border:1px solid var(--border); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); border-radius:18px; padding:16px; transition:transform .2s, box-shadow .2s}
+    .card:hover{transform:translateY(-3px); box-shadow: var(--glow)}
+    .card-title{font-weight:700; margin:6px 0 4px}
+    .card p{color:var(--muted); margin:0}
+
+    .tags{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+    .tag{font:600 12px/1 Inter; padding:8px 10px; border-radius:999px; background:rgba(255,255,255,.08); border:1px dashed var(--border)}
+
+    /* Projects */
+    .filters{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 18px}
+    .filter{cursor:pointer}
+    .filter.active{outline:2px solid var(--accent)}
+    .project-thumb{aspect-ratio:16/10; border-radius:12px; background:linear-gradient(135deg, rgba(124,58,237,.25), rgba(34,211,238,.25)); border:1px solid var(--border); display:grid; place-items:center; font-weight:700}
+
+    /* Contact */
+    form{display:grid; gap:12px}
+    .input{padding:12px 14px; border-radius:12px; border:1px solid var(--border); background:rgba(255,255,255,.06); color:var(--text); font-size:15px}
+    textarea.input{min-height:120px; resize:vertical}
+
+    /* Footer */
+    footer{padding:26px 0 40px; border-top:1px solid var(--border); color:var(--muted); font-size:14px}
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .hero{grid-template-columns:1fr; padding-top:40px}
+      .grid{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width: 640px){
+      .grid{grid-template-columns:1fr}
+      .nav-links{gap:14px}
+      .btn{padding:9px 12px}
+    }
+
+    /* Fun animated blobs */
+    .blob{position:absolute; border-radius:50%; filter: blur(40px); opacity:.45; pointer-events:none}
+    .blob.one{width:380px; height:380px; left:-90px; top:-120px; background:radial-gradient(circle at 30% 30%, var(--primary), transparent 60%)}
+    .blob.two{width:300px; height:300px; right:-80px; bottom:-100px; background:radial-gradient(circle at 70% 70%, var(--accent), transparent 55%)}
+
+    /* Toast */
+    .toast{position:fixed; right:20px; bottom:20px; background:var(--card); border:1px solid var(--border); padding:12px 14px; border-radius:12px; transform:translateY(20px); opacity:0; transition: all .25s ease;}
+    .toast.show{transform:none; opacity:1}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="logo"><div class="logo-badge"></div> Tonyy <span style="opacity:.6;font-weight:600">/ Software Engineer</span></div>
+      <nav class="nav-links">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#experience">Experience</a>
+        <a href="#contact">Contact</a>
+        <button id="theme-toggle" class="btn" aria-label="Toggle theme">🎨 Theme</button>
+        <div class="btn" id="resume-btn">⬇️ Resume</div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero -->
+    <section class="hero">
+      <div>
+        <h1 class="title">Hi, I’m <span class="grad">Tonyy</span> — I build fast, delightful experiences for the web.</h1>
+        <p class="subtitle">Cloud-focused software engineer with a taste for colorful UI, robust APIs, and clean architecture. Let’s turn ideas into shippable features.</p>
+        <div class="hero-cta">
+          <a href="#projects" class="btn">🚀 View Projects</a>
+          <a href="#contact" class="btn">💌 Get in Touch</a>
+          <span class="chip"><span class="badge-dot"></span> Available for work</span>
+        </div>
+        <div class="hero-card" style="margin-top:18px">
+          <div class="blob one"></div>
+          <div class="blob two"></div>
+          <div class="hero-grid">
+            <div class="card">
+              <div class="project-thumb">Performance</div>
+              <div class="card-title">Ship it, then scale it</div>
+              <p>Edge-first, cache-savvy, measured with Lighthouse and RUM.</p>
+              <div class="tags"><span class="tag">Next.js</span><span class="tag">CDN</span><span class="tag">Vitest</span></div>
+            </div>
+            <div class="card">
+              <div class="project-thumb">Cloud</div>
+              <div class="card-title">Infra you can trust</div>
+              <p>IaC, observability, and pragmatic automation.</p>
+              <div class="tags"><span class="tag">AWS</span><span class="tag">Terraform</span><span class="tag">Grafana</span></div>
+            </div>
+            <div class="card">
+              <div class="project-thumb">UI</div>
+              <div class="card-title">Pixel polish</div>
+              <p>Accessible, animated, and responsive interfaces.</p>
+              <div class="tags"><span class="tag">ARIA</span><span class="tag">Animations</span><span class="tag">A11y</span></div>
+            </div>
+            <div class="card">
+              <div class="project-thumb">API</div>
+              <div class="card-title">Strong contracts</div>
+              <p>REST/GraphQL with auth, caching, and rate limiting.</p>
+              <div class="tags"><span class="tag">Node</span><span class="tag">tRPC</span><span class="tag">OpenAPI</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="hero-card" aria-hidden="true" style="height:100%">
+          <canvas id="confetti" style="width:100%; height:420px; display:block; border-radius:16px; border:1px solid var(--border);"></canvas>
+          <div style="position:absolute; inset:0; display:grid; place-items:center; pointer-events:none">
+            <div class="chip">Move your mouse ✨</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about">
+      <h2 class="section-title">About</h2>
+      <p class="section-sub">I’m a cloud architect & software engineer who loves turning complex systems into smooth, colorful user experiences. I care about performance, accessibility, and DX.</p>
+      <div class="grid">
+        <div class="card">
+          <div class="card-title">Quick stats</div>
+          <ul style="margin:8px 0 0; padding-left:18px; color:var(--muted)">
+            <li>3+ years building full‑stack apps</li>
+            <li>Deployed to AWS, GCP, Azure</li>
+            <li>Secured with OAuth2/OIDC & role‑based access</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">Favorite stack</div>
+          <p>TypeScript • React • Node • Postgres • Redis • Terraform • Docker • AWS</p>
+        </div>
+        <div class="card">
+          <div class="card-title">Fun facts</div>
+          <p>RF nerd. I map Wi‑Fi like some people collect vinyls. Also: coffee, cats, and color theory.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects">
+      <h2 class="section-title">Projects</h2>
+      <p class="section-sub">Filter by type:</p>
+      <div class="filters">
+        <button class="btn filter active" data-filter="all">All</button>
+        <button class="btn filter" data-filter="web">Web</button>
+        <button class="btn filter" data-filter="cloud">Cloud</button>
+        <button class="btn filter" data-filter="ml">ML</button>
+      </div>
+
+      <div class="grid" id="project-grid" aria-live="polite">
+        <!-- Project Card Template -->
+        <article class="card project" data-tags="web">
+          <div class="project-thumb">Portfolio Engine</div>
+          <h3 class="card-title">Animated Portfolio Engine</h3>
+          <p>Single‑file, colorful portfolio with theme picker & filters.</p>
+          <div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span></div>
+          <div style="display:flex; gap:8px; margin-top:12px">
+            <a class="btn open-modal" href="#" data-title="Animated Portfolio Engine" data-desc="Built with semantic HTML, custom CSS, and vanilla JS. Includes theme toggle, ARIA, and fun canvas confetti.">🔎 Details</a>
+            <a class="btn" href="#contact">🌐 Live demo</a>
+          </div>
+        </article>
+
+        <article class="card project" data-tags="cloud">
+          <div class="project-thumb">Serverless</div>
+          <h3 class="card-title">Serverless Image Pipeline</h3>
+          <p>On‑the‑fly image resize & cache with signed URLs.</p>
+          <div class="tags"><span class="tag">AWS</span><span class="tag">Lambda</span><span class="tag">S3</span></div>
+          <div style="display:flex; gap:8px; margin-top:12px">
+            <a class="btn open-modal" href="#" data-title="Serverless Image Pipeline" data-desc="Zero‑ops pipeline using S3 events, Lambda (Node), and CloudFront for edge caching.">🔎 Details</a>
+            <a class="btn" href="#">📦 Repo</a>
+          </div>
+        </article>
+
+        <article class="card project" data-tags="ml">
+          <div class="project-thumb">Vision</div>
+          <h3 class="card-title">Smart Alt‑Text Generator</h3>
+          <p>Create descriptive alt text using a lightweight vision model.</p>
+          <div class="tags"><span class="tag">Python</span><span class="tag">FastAPI</span><span class="tag">ONNX</span></div>
+          <div style="display:flex; gap:8px; margin-top:12px">
+            <a class="btn open-modal" href="#" data-title="Smart Alt‑Text Generator" data-desc="Uploads images, queues jobs, and returns high‑quality alt text. Focus on accessibility.">🔎 Details</a>
+            <a class="btn" href="#">📦 Repo</a>
+          </div>
+        </article>
+
+        <article class="card project" data-tags="web">
+          <div class="project-thumb">Realtime</div>
+          <h3 class="card-title">Realtime Collab Notes</h3>
+          <p>CRDT‑based notes with presence & offline sync.</p>
+          <div class="tags"><span class="tag">WebRTC</span><span class="tag">CRDT</span><span class="tag">Vite</span></div>
+          <div style="display:flex; gap:8px; margin-top:12px">
+            <a class="btn open-modal" href="#" data-title="Realtime Collab Notes" data-desc="Collaborative editor using CRDTs, presence, and local‑first design.">🔎 Details</a>
+            <a class="btn" href="#">📦 Repo</a>
+          </div>
+        </article>
+
+        <article class="card project" data-tags="cloud">
+          <div class="project-thumb">IaC</div>
+          <h3 class="card-title">Zero‑Downtime Blue/Green</h3>
+          <p>Terraform + ASG strategy with health checks & rollbacks.</p>
+          <div class="tags"><span class="tag">Terraform</span><span class="tag">AWS</span><span class="tag">GitHub Actions</span></div>
+          <div style="display:flex; gap:8px; margin-top:12px">
+            <a class="btn open-modal" href="#" data-title="Zero‑Downtime Blue/Green" data-desc="Declarative deploys with automated smoke tests and traffic shifting.">🔎 Details</a>
+            <a class="btn" href="#">📦 Repo</a>
+          </div>
+        </article>
+
+        <article class="card project" data-tags="web ml">
+          <div class="project-thumb">AI UI</div>
+          <h3 class="card-title">Chat UI Kit</h3>
+          <p>Polished components for assistants & tools.</p>
+          <div class="tags"><span class="tag">TypeScript</span><span class="tag">React</span><span class="tag">Vercel</span></div>
+          <div style="display:flex; gap:8px; margin-top:12px">
+            <a class="btn open-modal" href="#" data-title="Chat UI Kit" data-desc="Composable chat components with keyboard nav, streaming UI, and tool calls.">🔎 Details</a>
+            <a class="btn" href="#">🌐 Live</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section id="experience">
+      <h2 class="section-title">Experience</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="card-title">Cloud Architect — BWM</div>
+          <p>Designed resilient systems & BCP playbooks, automated disaster recovery, and optimized cost/perf across environments.</p>
+          <div class="tags"><span class="tag">BCP</span><span class="tag">DR</span><span class="tag">Observability</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Software Engineer — PerfectServe (Prep)</div>
+          <p>Built internal tooling and helped shape technical interview prep with real‑world scenarios.</p>
+          <div class="tags"><span class="tag">Node</span><span class="tag">React</span><span class="tag">APIs</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Consultant — FDM Group</div>
+          <p>IT operations practice: automation, documentation, and support excellence.</p>
+          <div class="tags"><span class="tag">Ops</span><span class="tag">SRE</span><span class="tag">Runbooks</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+      <h2 class="section-title">Contact</h2>
+      <p class="section-sub">Want to collaborate or hire me? Send a message. I read every one.</p>
+      <div class="grid">
+        <div class="card">
+          <form id="contact-form" novalidate>
+            <input class="input" name="name" placeholder="Your name" aria-label="Your name" required />
+            <input class="input" name="email" type="email" placeholder="Email" aria-label="Email address" required />
+            <textarea class="input" name="message" placeholder="Message" aria-label="Your message" required></textarea>
+            <button class="btn" type="submit">✨ Send</button>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-title">Elsewhere</div>
+          <p><a class="btn" href="mailto:hello@example.com">📧 Email</a></p>
+          <p style="margin-top:8px"><a class="btn" href="#">💼 LinkedIn</a> <a class="btn" href="#" style="margin-left:8px">🐙 GitHub</a></p>
+          <p style="margin-top:8px"><a class="btn" href="#">📄 Resume</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      © <span id="year"></span> Tonyy. Built with semantic HTML, custom CSS, and vanilla JS.
+    </div>
+  </footer>
+
+  <!-- Modal -->
+  <div id="modal" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.5)">
+    <div role="dialog" aria-modal="true" aria-labelledby="modal-title" class="card" style="width:min(720px, 92vw); padding:20px; background:var(--bg); border:1px solid var(--border)">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px">
+        <h3 id="modal-title" class="section-title" style="margin:0">Title</h3>
+        <button id="modal-close" class="btn" aria-label="Close">✖</button>
+      </div>
+      <p id="modal-desc" style="color:var(--muted); margin-top:6px">Description</p>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite">Copied to clipboard!</div>
+
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Theme toggle & palette cycling
+    const root = document.documentElement;
+    const themes = ["default", "sunrise", "forest", "candy"];
+    let idx = 0;
+    function setTheme(t){
+      if(t === 'default'){ document.body.removeAttribute('data-theme'); }
+      else{ document.body.setAttribute('data-theme', t); }
+      localStorage.setItem('theme', t);
+    }
+    const saved = localStorage.getItem('theme');
+    if(saved){ setTheme(saved); idx = themes.indexOf(saved); if(idx < 0) idx = 0; }
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      idx = (idx + 1) % themes.length; setTheme(themes[idx]);
+    });
+
+    // Resume download (placeholder PDF generated on the fly)
+    document.getElementById('resume-btn').addEventListener('click', () => {
+      const blob = new Blob([
+        `Resume — Tonyy\n\nSoftware Engineer & Cloud Architect\n\nSkills: TypeScript, React, Node, AWS, Terraform, Postgres\nExperience: See portfolio site.\n`
+      ], {type: 'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'Tonyy_Resume.txt'; a.click();
+      URL.revokeObjectURL(url);
+      showToast('Downloading résumé…');
+    });
+
+    // Filters
+    const filters = document.querySelectorAll('.filter');
+    const cards = document.querySelectorAll('.project');
+    filters.forEach(btn => btn.addEventListener('click', () => {
+      filters.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tag = btn.dataset.filter;
+      cards.forEach(card => {
+        const includes = tag === 'all' || card.dataset.tags.includes(tag);
+        card.style.display = includes ? '' : 'none';
+      });
+    }));
+
+    // Modal
+    const modal = document.getElementById('modal');
+    const mTitle = document.getElementById('modal-title');
+    const mDesc = document.getElementById('modal-desc');
+    document.querySelectorAll('.open-modal').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        mTitle.textContent = link.dataset.title;
+        mDesc.textContent = link.dataset.desc;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      });
+    });
+    document.getElementById('modal-close').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+    function closeModal(){ modal.style.display = 'none'; document.body.style.overflow = ''; }
+
+    // Contact form (client-side validation + mailto)
+    const form = document.getElementById('contact-form');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form));
+      if(!data.name || !data.email || !data.message){ return showToast('Please complete all fields.'); }
+      const subject = encodeURIComponent(`Portfolio contact from ${data.name}`);
+      const body = encodeURIComponent(`${data.message}\n\n— ${data.name}\n${data.email}`);
+      window.location.href = `mailto:hello@example.com?subject=${subject}&body=${body}`;
+      showToast('Opening your email app…');
+      form.reset();
+    });
+
+    // Confetti canvas (interactive)
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    const DPR = Math.min(window.devicePixelRatio || 1, 2);
+    let w, h, pieces = [];
+    function resize(){
+      const rect = canvas.getBoundingClientRect();
+      w = canvas.width = rect.width * DPR; h = canvas.height = rect.height * DPR; ctx.scale(DPR, DPR);
+    }
+    window.addEventListener('resize', resize); resize();
+
+    function spawn(x, y){
+      for(let i=0;i<12;i++){
+        pieces.push({ x, y, vx:(Math.random()-0.5)*4, vy: -Math.random()*3-1, r: Math.random()*2+1, a: 1, hue: Math.random()*360 });
+      }
+    }
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      spawn(e.clientX - rect.left, e.clientY - rect.top);
+    });
+
+    function step(){
+      const rect = canvas.getBoundingClientRect();
+      ctx.clearRect(0,0,rect.width,rect.height);
+      pieces.forEach(p => {
+        p.vy += 0.06; p.x += p.vx; p.y += p.vy; p.a -= 0.01;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fillStyle = `hsla(${p.hue}, 90%, 60%, ${Math.max(p.a,0)})`;
+        ctx.fill();
+      });
+      pieces = pieces.filter(p => p.a > 0 && p.y < rect.height + 10);
+      requestAnimationFrame(step);
+    }
+    step();
+
+    // Toast helper
+    const toast = document.getElementById('toast');
+    function showToast(msg){
+      toast.textContent = msg; toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1800);
+    }
+  </script>
+</body>
+</html>
